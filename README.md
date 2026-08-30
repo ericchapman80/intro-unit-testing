@@ -383,3 +383,185 @@ Refactor: improve the code and keep it passing
 ```
 
 For this project, the important idea is not just the formula. The important idea is learning how to prove that the formula works in code.
+
+
+## Adding Unit Tests to an Existing Python Assignment
+
+You can also add unit tests to a Python program you already wrote for class. This is a common next step: first the program works, then you start moving important logic into functions so you can test it.
+
+### 1. Open the Assignment Folder
+
+In Terminal, go to the folder that contains the assignment:
+
+```bash
+cd path/to/your/assignment-folder
+```
+
+For example:
+
+```bash
+cd ~/projects/my-python-assignment
+```
+
+### 2. Install Pytest
+
+If the assignment does not use a `requirements.txt` file, install `pytest` directly:
+
+```bash
+python3 -m pip install pytest
+```
+
+If that does not work, try upgrading `pip` first:
+
+```bash
+python3 -m ensurepip --upgrade
+python3 -m pip install --upgrade pip
+python3 -m pip install pytest
+```
+
+Use `python3 -m pip` instead of just `pip`. That helps make sure `pytest` is installed for the same Python version you are using to run the program.
+
+### 3. Create a Test File
+
+If your assignment file is named `assignment.py`, create a test file named:
+
+```text
+test_assignment.py
+```
+
+Pytest looks for files that start with `test_`.
+
+### 4. Move Important Logic Into a Function
+
+Many beginner programs start as a script, with all the code running from top to bottom. That is normal.
+
+For example:
+
+```python
+principal = float(input("Principal: "))
+rate = float(input("Rate: "))
+time = float(input("Time: "))
+
+interest = principal * rate * time
+print(interest)
+```
+
+This works as a program, but it is hard to unit test because the calculation is mixed together with `input()` and `print()`.
+
+A better testing shape is:
+
+```python
+def calculate_interest(principal, rate, time):
+    return principal * rate * time
+
+
+if __name__ == "__main__":
+    principal = float(input("Principal: "))
+    rate = float(input("Rate: "))
+    time = float(input("Time: "))
+
+    interest = calculate_interest(principal, rate, time)
+    print(interest)
+```
+
+The function contains the logic we want to test. The `if __name__ == "__main__":` block contains the code that should only run when a person runs the program directly.
+
+Indentation matters. After this line:
+
+```python
+if __name__ == "__main__":
+```
+
+The interactive code beneath it must be indented:
+
+```python
+if __name__ == "__main__":
+    principal = float(input("Principal: "))
+    rate = float(input("Rate: "))
+    time = float(input("Time: "))
+```
+
+### 5. Write a Small Test
+
+In `test_assignment.py`, import the function and test one expected result:
+
+```python
+from assignment import calculate_interest
+
+
+def test_calculates_interest():
+    result = calculate_interest(100, 0.05, 2)
+
+    assert result == 10
+```
+
+Run the test:
+
+```bash
+python3 -m pytest
+```
+
+### Troubleshooting
+
+If you see an error like this:
+
+```text
+OSError: pytest: reading from stdin while output is captured
+```
+
+That usually means `input()` ran while pytest was trying to import or test the file.
+
+First, make sure your `input()` code is inside a main block:
+
+```python
+if __name__ == "__main__":
+    name = input("Name: ")
+```
+
+If you are intentionally testing a program that asks for input, you can run pytest with:
+
+```bash
+python3 -m pytest -s
+```
+
+The `-s` option lets input and output happen directly in the terminal. For beginner unit testing, though, it is usually better to test functions first and keep `input()` outside the tests.
+
+If Python says it cannot find `pytest`, try:
+
+```bash
+python3 -m pip install pytest
+python3 -m pytest
+```
+
+If Python says it cannot import your function, check these things:
+
+- The function name in the test matches the function name in the program.
+- The file name in the import matches the program file name.
+- The test file is in the same folder as the program file.
+- The program file does not have spaces or dashes in its name.
+
+For example, this works well:
+
+```text
+assignment.py
+test_assignment.py
+```
+
+This can cause problems:
+
+```text
+my assignment.py
+my-assignment.py
+```
+
+### A Good First Goal
+
+When adding tests to an existing assignment, start small:
+
+1. Pick one calculation or decision in the program.
+2. Move it into a function.
+3. Write one test for that function.
+4. Run `python3 -m pytest`.
+5. Add one more test when the first one passes.
+
+You do not need to test the whole program at once. One small tested function is a great start.
