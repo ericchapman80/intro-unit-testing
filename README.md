@@ -75,14 +75,14 @@ The failing test is not a bad thing. It shows that the test is actually checking
 
 ## Project Setup
 
-If you are starting from scratch, create a new folder for the project:
+Start by cloning this project from GitHub:
 
 ```bash
-mkdir intro-unit-testing
+git clone git@github.com:ericchapman80/intro-unit-testing.git
 cd intro-unit-testing
 ```
 
-If this folder already exists and you are already inside it, you can skip those two commands.
+If you already cloned the project and are already inside the `intro-unit-testing` folder, you can skip those two commands.
 
 Create a virtual environment:
 
@@ -99,10 +99,10 @@ source .venv/bin/activate
 Install `pytest`:
 
 ```bash
-python -m pip install pytest
+python -m pip install -r requirements.txt
 ```
 
-Create two files:
+This project already includes two starter files:
 
 ```text
 interest.py
@@ -113,9 +113,13 @@ Your folder should look like this:
 
 ```text
 intro-unit-testing/
+  .gitignore
   interest.py
+  requirements.txt
   test_interest.py
 ```
+
+The starter files are intentionally almost empty. That is part of the lesson. We will use TDD to decide what code belongs in them.
 
 ## Step 1: Write the Test First
 
@@ -263,14 +267,16 @@ def calculate_interest(principal, rate, time):
 
 
 if __name__ == "__main__":
-    principal = 100
-    rate = 0.05
-    time = 2
+    principal = float(input("Principal: "))
+    rate = float(input("Rate as a decimal, like 0.05 for 5%: "))
+    time = float(input("Time in years: "))
 
     interest = calculate_interest(principal, rate, time)
 
     print(f"The interest is ${interest:.2f}")
 ```
+
+The `input` function asks the user a question and waits for them to type an answer. The `float` function converts that answer from text into a number with decimals. For this lesson, we will keep the input code simple and focus our tests on the calculation function.
 
 Run the program:
 
@@ -278,7 +284,15 @@ Run the program:
 python interest.py
 ```
 
-You should see:
+Type these values when the program asks:
+
+```text
+Principal: 100
+Rate as a decimal, like 0.05 for 5%: 0.05
+Time in years: 2
+```
+
+You should then see:
 
 ```text
 The interest is $10.00
@@ -303,9 +317,9 @@ def calculate_interest(principal, rate, time):
 
 
 if __name__ == "__main__":
-    principal = 100
-    rate = 0.05
-    time = 2
+    principal = float(input("Principal: "))
+    rate = float(input("Rate as a decimal, like 0.05 for 5%: "))
+    time = float(input("Time in years: "))
 
     interest = calculate_interest(principal, rate, time)
 
